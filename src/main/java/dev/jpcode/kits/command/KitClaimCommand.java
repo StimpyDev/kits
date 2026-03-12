@@ -40,7 +40,7 @@ public class KitClaimCommand implements Command<ServerCommandSource> {
         var kitRecordOpt = storage.getKitRecord(kitName);
         if (kitRecordOpt.isEmpty()) {
             player.getCommandSource().sendError(Text.literal(
-                "Kit '%s' not found".formatted(kitName)
+                "Kit '%s' niet gevonden".formatted(kitName)
             ));
             return 2;
         }
@@ -53,7 +53,7 @@ public class KitClaimCommand implements Command<ServerCommandSource> {
 
         if (!KitPerms.checkKit(commandSource, kitRecord)) {
             commandSource.sendError(Text.of(String.format(
-                "Insufficient permissions for kit '%s'.",
+                "Onvoldoende rechten voor kit '%s'.",
                 kitName)));
             return -1;
         }
@@ -62,27 +62,27 @@ public class KitClaimCommand implements Command<ServerCommandSource> {
         if (kitRecord.ring() != null && kitRecord.ring().permanentChoice()) {
             if (!playerData.mayClaimFromRing(kitRecord.ringName(), kitName)) {
                 commandSource.sendError(Text.of(String.format(
-                    "You have already chosen '%s' as your kit for ring '%s'.",
+                    "Je hebt '%s' al gekozen als je kit voor ring '%s'.",
                     playerData.getRingChoice(kitRecord.ringName()),
                     kitRecord.ringName())));
                 return -1;
             }
         }
 
-        if (cooldown < 0 && lastUsed.isPresent()) {
-            commandSource.sendError(Text.of(String.format(
-                "Kit '%s' can only be claimed once.",
-                kitName)));
-            return -2;
-        } else if (remainingTime > 0) {
-            commandSource.sendError(Text.of(
-                String.format(
-                    "Kit '%s' is on cooldown. %s remaining.",
-                    kitName,
-                    TimeUtil.formatTime(remainingTime)
-                )));
-            return -2;
-        }
+if (cooldown < 0 && lastUsed.isPresent()) {
+    commandSource.sendError(Text.builder(
+            String.format("Kit '%s' kan slechts één keer worden geclaimd.", kitName))
+        .color(TextColors.RED)
+        .build());
+    return -2;
+} else if (remainingTime > 0) {
+    commandSource.sendError(Text.builder(
+            String.format("Kit '%s' is in afkoelperiode. %s resterend.", 
+                kitName, TimeUtil.formatTime(remainingTime)))
+        .color(TextColors.RED)
+        .build());
+    return -2;
+}
 
         PlayerInventory playerInventory = player.getInventory();
         playerData.useKit(kitName, kitRecord.cooldownKey());
@@ -96,8 +96,10 @@ public class KitClaimCommand implements Command<ServerCommandSource> {
         if (!kit.commands().isEmpty()) runCommands(player, kit.commands());
 
         commandSource.sendFeedback(() ->
-            Text.of(String.format("Successfully claimed kit '%s'!", kitName)),
-            commandSource.getServer().shouldBroadcastConsoleToOps()
+         Text.builder(String.format("Kit '%s' succesvol geclaimd!", kitName))
+         .color(TextColors.GREEN)
+         .build(),
+        commandSource.getServer().shouldBroadcastConsoleToOps()
         );
 
         return 1;
