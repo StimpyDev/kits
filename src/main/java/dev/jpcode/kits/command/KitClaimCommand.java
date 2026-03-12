@@ -92,7 +92,7 @@ if (cooldown < 0 && lastUsed.isPresent()) {
         }
 
         offerAllCopies(kit.inventory(), playerInventory);
-        if (!kit.commands().isEmpty()) runCommands(player, kit.commands());\
+        if (!kit.commands().isEmpty()) runCommands(player, kit.commands());
         
         commandSource.sendFeedback(() ->
             Text.literal(String.format("Kit '%s' succesvol geclaimd!", kitName))
