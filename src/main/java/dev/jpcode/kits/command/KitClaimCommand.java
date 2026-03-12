@@ -12,6 +12,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
+import net.minecraft.util.Formatting;
 
 import dev.jpcode.kits.*;
 import dev.jpcode.kits.access.ServerPlayerEntityAccess;
@@ -70,17 +71,15 @@ public class KitClaimCommand implements Command<ServerCommandSource> {
         }
 
 if (cooldown < 0 && lastUsed.isPresent()) {
-    commandSource.sendError(Text.builder(
+    commandSource.sendError(Text.literal(
             String.format("Kit '%s' kan slechts één keer worden geclaimd.", kitName))
-        .color(TextColors.RED)
-        .build());
+        .formatted(Formatting.RED));
     return -2;
 } else if (remainingTime > 0) {
-    commandSource.sendError(Text.builder(
+    commandSource.sendError(Text.literal(
             String.format("Kit '%s' is in afkoelperiode. %s resterend.", 
                 kitName, TimeUtil.formatTime(remainingTime)))
-        .color(TextColors.RED)
-        .build());
+        .formatted(Formatting.RED));
     return -2;
 }
 
@@ -96,11 +95,10 @@ if (cooldown < 0 && lastUsed.isPresent()) {
         if (!kit.commands().isEmpty()) runCommands(player, kit.commands());
 
         commandSource.sendFeedback(() ->
-         Text.builder(String.format("Kit '%s' succesvol geclaimd!", kitName))
-         .color(TextColors.GREEN)
-         .build(),
-        commandSource.getServer().shouldBroadcastConsoleToOps()
-        );
+    Text.literal(String.format("Kit '%s' succesvol geclaimd!", kitName))
+        .formatted(Formatting.GREEN),
+    commandSource.getServer().shouldBroadcastConsoleToOps()
+);
 
         return 1;
     }
