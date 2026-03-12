@@ -12,10 +12,10 @@ public final class KitPerms {
     }
 
     public static boolean checkKit(ServerCommandSource source, String kitPermissionKey) {
-        return Permissions.check(source, "kits.claim." + kitPermissionKey, 4);
+        return Permissions.check(source, "kits.claim." + kitPermissionKey, 0);
     }
 
     public static boolean checkKit(ServerCommandSource source, KitsModStorage.KitRecord kitRecord) {
-        return Permissions.check(source, "kits.claim." + kitRecord.permissionName(), 4);
+        return Permissions.check(source, "kits.claim." + kitRecord.permissionName(), 0);
     }
 }
